@@ -131,7 +131,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     rpc.on('log',s=>this.output.appendLine(s));rpc.on('notification',m=>this.notification(m));rpc.on('request',m=>{void this.serverRequest(m).catch(e=>this.error(e));});
     rpc.on('disconnect',e=>{if(this.disposed)return;this.rpc=undefined;this.connectedThread=undefined;this.busy=false;this.turn=undefined;this.approvals.clear();if(this.chat)this.chat.interrupted=true;this.error(e);});
     rpc.start(runtime.binary,['app-server','--listen','stdio://'],this.chat!.cwd,runtime.env);
-    await rpc.request('initialize',{clientInfo:{name:'self_agent',title:'Ollama Sidebar',version:'0.1.4'},capabilities:{experimentalApi:false}});rpc.notify('initialized');
+    await rpc.request('initialize',{clientInfo:{name:'self_agent',title:'Ollama Sidebar',version:this.context.extension.packageJSON.version},capabilities:{experimentalApi:false}});rpc.notify('initialized');
   }
   private async send(text:string){
     if(this.busy||this.choosingModel)return;if(!vscode.workspace.isTrusted)throw new Error('신뢰하는 작업 폴더에서 실행하세요.');

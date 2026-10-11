@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import {mkdir,writeFile,readFile} from 'node:fs/promises';
 export async function run(){
- const extension=vscode.extensions.getExtension('self-agent-local.ollama-sidebar');assert.ok(extension,'Extension is registered');
+ const manifest=JSON.parse(await readFile(path.resolve(__dirname,'../package.json'),'utf8'));
+ const extension=vscode.extensions.getExtension(`${manifest.publisher}.${manifest.name}`);assert.ok(extension,'Extension is registered');
  const {provider}=await extension.activate();const commands=await vscode.commands.getCommands();assert.ok(commands.includes('selfAgent.open'));
  await vscode.commands.executeCommand('selfAgent.open');
  for(let i=0;i<30&&!provider.view;i++)await new Promise(r=>setTimeout(r,100));

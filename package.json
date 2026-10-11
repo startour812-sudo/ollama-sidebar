@@ -2,8 +2,9 @@
   "name": "ollama-sidebar",
   "displayName": "Ollama Sidebar",
   "description": "Local Codex and Ollama in your right sidebar",
-  "version": "0.1.4",
-  "publisher": "self-agent-local",
+  "version": "0.1.5",
+  "icon": "media/logo.png",
+  "publisher": "OllamaSidebar",
   "license": "MIT",
   "engines": {
     "vscode": "^1.106.0"
@@ -31,7 +32,7 @@
     "test": "tsx --test test/*.test.ts",
     "test:live": "tsx test/live.ts",
     "test:integration": "node test/run-integration.mjs",
-    "package": "npm run build && node -e \"require('node:fs').mkdirSync('artifacts',{recursive:true})\" && vsce package --no-dependencies --allow-missing-repository --out artifacts/ollama-sidebar-0.1.4.vsix"
+    "package": "npm run build && node -e \"require('node:fs').mkdirSync('artifacts',{recursive:true})\" && vsce package --no-dependencies --allow-missing-repository --out artifacts/ollama-sidebar-0.1.5.vsix"
   },
   "contributes": {
     "commands": [
