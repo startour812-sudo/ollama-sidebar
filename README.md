@@ -4,6 +4,8 @@
 
 **A local AI coding assistant in your VS Code sidebar.** Chat with Ollama models, attach code, and ask the assistant to inspect or modify your project. Ollama runs inference locally; Codex app-server provides the coding tools.
 
+This project was developed with [OpenAI Codex](https://github.com/openai/codex) as a reference and uses its app-server protocol and runtime for agent execution. Ollama Sidebar is an independent project and is not an official OpenAI extension.
+
 [한국어 사용법](https://github.com/startour812-sudo/ollama-sidebar/blob/main/README.ko.md)
 
 ## Features

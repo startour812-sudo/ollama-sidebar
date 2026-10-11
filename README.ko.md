@@ -2,6 +2,8 @@
 
 VS Code 오른쪽 사이드바에서 **로컬 Ollama 모델과 대화하고 프로젝트 파일을 읽거나 수정하는 확장**입니다. Codex app-server를 실행 엔진으로 사용하며, 모델 추론은 로컬 Ollama 서버에서 수행합니다.
 
+이 프로젝트는 [OpenAI Codex](https://github.com/openai/codex)를 레퍼런스로 참고하여 개발했으며, 에이전트 실행에 Codex app-server 프로토콜과 런타임을 사용합니다. Ollama Sidebar는 독립 프로젝트이며 OpenAI의 공식 확장이 아닙니다.
+
 ## 기능과 지원 환경
 
 - 응답 스트리밍, 파일·선택 코드 첨부, 명령 실행 결과 및 파일 변경 표시
