@@ -1,0 +1,16 @@
+src/**
+test/**
+node_modules/**
+tsconfig.json
+build.mjs
+package-lock.json
+dist/*.map
+.test-state/**
+**/*.log
+artifacts/**
+scripts/**
+.vscode/**
+.github/**
+AGENTS.md
+.gitattributes
+.gitignore

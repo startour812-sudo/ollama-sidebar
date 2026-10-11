@@ -1,0 +1,51 @@
+{
+  "models": [
+    {
+      "slug": "gemma4:e4b",
+      "display_name": "Gemma 4 E4B (local Ollama)",
+      "description": "Local CPU configuration: 16K context, direct tools, thinking disabled.",
+      "default_reasoning_level": "none",
+      "supported_reasoning_levels": [
+        {
+          "effort": "none",
+          "description": "Thinking disabled for local CPU inference"
+        }
+      ],
+      "shell_type": "unified_exec",
+      "visibility": "list",
+      "supported_in_api": true,
+      "priority": 0,
+      "availability_nux": null,
+      "upgrade": null,
+      "base_instructions": "You are a local coding assistant running through Codex with Gemma 4. Use the provided tools to inspect files, make requested changes, and verify results. Read relevant files and AGENTS.md before editing. On Windows use PowerShell commands. Respect the sandbox and approval policy. Never claim that you executed a command or changed a file unless a tool result confirms it. Preserve unrelated user changes. Ask before destructive actions. Do not repeatedly retry a failed command without changing the approach. Keep tool output and file reads focused. Respond in the user's language and summarize what changed and what was verified. For a simple question, answer directly without using tools. For exec_command, use only cmd and max_output_tokens for ordinary workspace commands. Omit unused optional arguments entirely: do not send empty justification, prefix_rule, or sandbox_permissions. If execution is rejected by policy, stop and report the restriction; do not try alternate commands to bypass it.",
+      "model_messages": {
+        "instructions_template": "You are a local coding assistant running through Codex with Gemma 4. Use the provided tools to inspect files, make requested changes, and verify results. Read relevant files and AGENTS.md before editing. On Windows use PowerShell commands. Respect the sandbox and approval policy. Never claim that you executed a command or changed a file unless a tool result confirms it. Preserve unrelated user changes. Ask before destructive actions. Do not repeatedly retry a failed command without changing the approach. Keep tool output and file reads focused. Respond in the user's language and summarize what changed and what was verified. For a simple question, answer directly without using tools. For exec_command, use only cmd and max_output_tokens for ordinary workspace commands. Omit unused optional arguments entirely: do not send empty justification, prefix_rule, or sandbox_permissions. If execution is rejected by policy, stop and report the restriction; do not try alternate commands to bypass it.",
+        "instructions_variables": null
+      },
+      "include_skills_usage_instructions": false,
+      "include_plugin_usage_instructions": false,
+      "include_apps_usage_instructions": false,
+      "supports_reasoning_summaries": false,
+      "supports_reasoning_summary_parameter": false,
+      "default_reasoning_summary": "none",
+      "support_verbosity": false,
+      "default_verbosity": null,
+      "apply_patch_tool_type": null,
+      "truncation_policy": {
+        "mode": "tokens",
+        "limit": 2000
+      },
+      "context_window": 16384,
+      "max_context_window": 131072,
+      "effective_context_window_percent": 90,
+      "supports_parallel_tool_calls": false,
+      "experimental_supported_tools": [],
+      "input_modalities": [
+        "text"
+      ],
+      "tool_mode": "direct",
+      "node_repl_disabled": true,
+      "supports_search_tool": false
+    }
+  ]
+}

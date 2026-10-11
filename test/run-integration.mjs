@@ -1,0 +1,10 @@
+import {runTests,downloadAndUnzipVSCode} from '@vscode/test-electron';
+import {build} from 'esbuild';
+import path from 'node:path';
+import {mkdir} from 'node:fs/promises';
+const root=process.cwd();
+delete process.env.ELECTRON_RUN_AS_NODE;
+await build({entryPoints:['test/integration.ts'],outfile:'.test-state/integration.cjs',bundle:true,platform:'node',external:['vscode']});
+await mkdir('.test-state/integration-workspace',{recursive:true});
+const executable=process.env.SELF_AGENT_TEST_CODE||await downloadAndUnzipVSCode({version:'1.137.0',cachePath:path.join(root,'.test-state/vscode-download')});
+await runTests({vscodeExecutablePath:executable,extensionDevelopmentPath:root,extensionTestsPath:path.join(root,'.test-state/integration.cjs'),launchArgs:[path.join(root,'.test-state/integration-workspace'),'--user-data-dir',path.join(root,'.test-state/vscode-data'),'--extensions-dir',path.join(root,'.test-state/vscode-extensions'),'--disable-workspace-trust','--skip-welcome','--skip-release-notes','--disable-updates']});

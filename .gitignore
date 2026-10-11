@@ -1,0 +1,10 @@
+node_modules/
+dist/
+artifacts/
+.test-state/
+.runtime/
+.npm-cache/
+*.vsix
+*.log
+.env
+.env.*

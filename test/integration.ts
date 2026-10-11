@@ -1,0 +1,37 @@
+import * as vscode from 'vscode';
+import assert from 'node:assert/strict';
+import path from 'node:path';
+import {mkdir,writeFile,readFile} from 'node:fs/promises';
+export async function run(){
+ const extension=vscode.extensions.getExtension('self-agent-local.ollama-sidebar');assert.ok(extension,'Extension is registered');
+ const {provider}=await extension.activate();const commands=await vscode.commands.getCommands();assert.ok(commands.includes('selfAgent.open'));
+ await vscode.commands.executeCommand('selfAgent.open');
+ for(let i=0;i<30&&!provider.view;i++)await new Promise(r=>setTimeout(r,100));
+ assert.ok(provider.view?.visible,'Sidebar webview visible');assert.match(provider.view.webview.html,/OLLAMA SIDEBAR/);
+ assert.ok(!commands.includes('selfAgent.setup'));assert.ok(!provider.view.webview.html.includes('id="setup"'));
+ assert.equal(provider.settings().runtimeRoot,path.join(process.env.LOCALAPPDATA!,'SelfAgent'));
+ assert.equal(provider.settings().defaultModelCatalog.toLowerCase(),path.join(extension.extensionPath,'resources','gemma-models.json').toLowerCase());
+ const catalog=JSON.parse(await readFile(provider.settings().defaultModelCatalog,'utf8'));assert.ok(catalog.models.some((m:any)=>m.slug==='gemma4:e4b'));
+ const folder=vscode.workspace.workspaceFolders![0].uri.fsPath;const file=path.join(folder,'attachment.txt');await writeFile(file,'hello Korean 한글\n');
+ const editor=await vscode.window.showTextDocument(vscode.Uri.file(file));editor.selection=new vscode.Selection(0,0,0,5);
+ await provider.attach('selection');assert.equal(provider.attachments[0].text,'hello');
+ let responded:any;provider.rpc={respond:(id:any,result:any)=>{responded={id,result};},dispose:()=>{}};
+ provider.chat={id:'integration-test',title:'integration',cwd:folder,model:'gemma4:e4b',threadId:'test-thread',entries:[],updated:Date.now()};
+ await provider.serverRequest({id:9,method:'item/commandExecution/requestApproval',params:{threadId:'test-thread',command:'echo approved'}});
+ assert.equal(provider.approvals.size,1);provider.approve('9','decline');assert.deepEqual(responded,{id:9,result:{decision:'decline'}});
+ provider.chat.entries.push({id:'answer',kind:'assistant',text:'persisted response'});await provider.save();provider.chat=undefined;await provider.load('integration-test');assert.equal(provider.chat.entries[0].text,'persisted response');
+ provider.busy=true;provider.turn='test-turn';provider.rpc={request:async(method:string,params:any)=>{responded={method,params};return {};},dispose:()=>{}};
+ await provider.stop();assert.equal((responded as any).method,'turn/interrupt');provider.notification({method:'turn/completed',params:{threadId:'test-thread',turn:{status:'interrupted'}}});assert.equal(provider.busy,false);
+ await provider.newChat();assert.equal(provider.chat,undefined);await provider.reveal();
+ const previousModel=vscode.workspace.getConfiguration('selfAgent').get<string>('model');
+ provider.rpc=undefined;
+ provider.chat={id:'model-switch-test',title:'before switch',cwd:folder,model:previousModel,entries:[],updated:Date.now()};
+ await provider.switchModel('test-tools:latest');
+ assert.equal(provider.chat,undefined);assert.equal(provider.settings().model,'test-tools:latest');
+ await provider.load('model-switch-test');assert.equal(provider.chat.model,previousModel);
+ provider.busy=true;await assert.rejects(()=>provider.switchModel('blocked:latest'));assert.equal(provider.settings().model,'test-tools:latest');provider.busy=false;
+ await vscode.workspace.getConfiguration('selfAgent').update('model',previousModel,vscode.ConfigurationTarget.Global);
+ await provider.newChat();
+ const result=path.join(extension.extensionPath,'.test-state','integration-result.json');await mkdir(path.dirname(result),{recursive:true});await writeFile(result,JSON.stringify({passed:true,checks:['activation','right-sidebar webview visible','selection attachment','approval rejection','history persistence','interrupt','new chat']},null,2));
+ console.log('PASS: Ollama Sidebar VS Code integration');
+}

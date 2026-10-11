@@ -1,0 +1,156 @@
+{
+  "name": "ollama-sidebar",
+  "displayName": "Ollama Sidebar",
+  "description": "Local Codex and Ollama in your right sidebar",
+  "version": "0.1.4",
+  "publisher": "self-agent-local",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.106.0"
+  },
+  "categories": [
+    "AI",
+    "Other"
+  ],
+  "extensionKind": [
+    "ui"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onView:selfAgent.chat"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    },
+    "virtualWorkspaces": false
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "tsc --noEmit",
+    "test": "tsx --test test/*.test.ts",
+    "test:live": "tsx test/live.ts",
+    "test:integration": "node test/run-integration.mjs",
+    "package": "npm run build && node -e \"require('node:fs').mkdirSync('artifacts',{recursive:true})\" && vsce package --no-dependencies --allow-missing-repository --out artifacts/ollama-sidebar-0.1.4.vsix"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "selfAgent.open",
+        "title": "채팅 열기",
+        "category": "Ollama Sidebar",
+        "icon": "media/icon.svg"
+      },
+      {
+        "command": "selfAgent.newChat",
+        "title": "새 대화",
+        "category": "Ollama Sidebar",
+        "icon": "$(add)"
+      },
+      {
+        "command": "selfAgent.attachSelection",
+        "title": "선택 코드를 첨부",
+        "category": "Ollama Sidebar"
+      }
+    ],
+    "viewsContainers": {
+      "secondarySidebar": [
+        {
+          "id": "selfAgentSidebar",
+          "title": "Ollama Sidebar",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "selfAgentSidebar": [
+        {
+          "id": "selfAgent.chat",
+          "name": "Ollama Sidebar",
+          "type": "webview"
+        }
+      ]
+    },
+    "menus": {
+      "editor/title": [
+        {
+          "command": "selfAgent.open",
+          "group": "navigation@20"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "selfAgent.attachSelection",
+          "when": "editorHasSelection",
+          "group": "selfAgent"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "selfAgent.newChat",
+          "when": "view == selfAgent.chat",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Ollama Sidebar",
+      "properties": {
+        "selfAgent.ollamaExecutable": {
+          "type": "string",
+          "default": "ollama",
+          "scope": "application"
+        },
+        "selfAgent.ollamaUrl": {
+          "type": "string",
+          "default": "http://127.0.0.1:11435",
+          "scope": "application"
+        },
+        "selfAgent.autoStartOllama": {
+          "type": "boolean",
+          "default": true,
+          "scope": "application"
+        },
+        "selfAgent.model": {
+          "type": "string",
+          "default": "gemma4:e4b",
+          "scope": "application"
+        },
+        "selfAgent.modelCatalog": {
+          "type": "string",
+          "default": "",
+          "scope": "application",
+          "description": "Optional absolute model catalog path"
+        },
+        "selfAgent.contextLength": {
+          "type": "integer",
+          "default": 16384,
+          "minimum": 4096,
+          "maximum": 131072,
+          "scope": "application"
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "marked": "^15.0.0",
+    "dompurify": "^3.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.106.0",
+    "typescript": "^5.8.0",
+    "esbuild": "^0.25.0",
+    "tsx": "^4.19.0",
+    "@vscode/vsce": "^3.6.0",
+    "@vscode/test-electron": "^2.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/startour812-sudo/ollama-sidebar.git"
+  },
+  "homepage": "https://github.com/startour812-sudo/ollama-sidebar#readme",
+  "bugs": {
+    "url": "https://github.com/startour812-sudo/ollama-sidebar/issues"
+  }
+}
